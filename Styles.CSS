@@ -1,0 +1,13 @@
+body{
+    color: #202020;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1vw;
+    margin:1vw;
+}
+div{
+    align-content: center;
+    background-color: #303030;
+    padding: 10px;
+    border-radius: 5px;
+}
