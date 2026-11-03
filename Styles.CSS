@@ -1,13 +1,61 @@
 body{
-    color: #202020;
+    background-color: #202020;
+    color:antiquewhite;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1vw;
-    margin:1vw;
+    margin:1vw 1vh;
+    height: 96vh;
+    width: 98vw;
+    font-family:Arial, Helvetica, sans-serif;
+    cursor: none;
 }
-div{
-    align-content: center;
+.card{
     background-color: #303030;
     padding: 10px;
     border-radius: 5px;
+    border: 1px  #555;
+}
+
+
+
+#clockDiv{
+    height: 24vh;
+}
+#clock{
+    font-weight: 1000;
+    font-size: 5vw;
+    text-align: center;
+    padding: auto;
+}
+#date{
+    text-align: center;
+    font-size: 3vw;
+}
+
+
+
+#weatherDiv{
+    height: 24vh;
+}
+
+#bussDiv table{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#bussDiv th,
+#bussDiv td{
+    padding: 0.5rem;
+}
+
+.bus-board + .bus-board{
+    margin-top: 1rem;
+    border-top: 1px solid #555;
+    padding-top: 0.5rem;
+}
+
+.bus-board h2{
+    margin: 0.5rem 0;
 }

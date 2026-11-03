@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InfoSkjerm</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="Styles.CSS">
 </head>
 <body id="backImg">
-    <div id="clockDiv">
-        <p>Clock</p>
+    <div class="card"id="clockDiv">
+        <div id="clock"></div>
+        <div id="date"></div>
     </div>
-    <div id="weatherDiv">
+    </div>
+    <div class="card" id="weatherDiv">
         <p>Weather</p>
     </div>
-    <div id="bussDiv">
-        <p>Buss</p>
+    <div class="card" id="bussDiv">
+        <section class="bus-board">
+            <h2 id="bus-title">Bus departures</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Line</th>
+                        <th>Destination</th>
+                        <th>Departs</th>
+                    </tr>
+                </thead>
+                <tbody id="bus-table"></tbody>
+            </table>
+        </section>
+        <section class="bus-board">
+            <h2 id="bus-title-secondary">Bus departures</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Line</th>
+                        <th>Destination</th>
+                        <th>Departs</th>
+                    </tr>
+                </thead>
+                <tbody id="bus-table-secondary"></tbody>
+            </table>
+        </section>
     </div>
-    <div id="extraDiv">
+    <div class="card" id="extraDiv">
         <p>Sum Buzzword</p>
     </div>
-    <img src="" alt="" id="apod_pic" class="img-apod">
-    <script src="Script.js"></script>
+    <script src="Script.JS"></script>
 </body>
 </html>
