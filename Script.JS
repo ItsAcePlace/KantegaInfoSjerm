@@ -13,15 +13,23 @@ startTime();
 
 
 
-data = fetch("https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=63.43&lon=10.39", {
-  headers: {
-    "User-Agent": "Ace",
-    "Accept": "application/json",
-    
-  }
-})
-console.log(data.json)
-
+async function getWeather(hour) {
+  const response = await fetch("https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=63.43&lon=10.39");
+  const data = await response.json();
+  console.log(response);
+  const time = data.properties.timeseries[hour].time
+  const symbol = data.properties.timeseries[hour].data.next_1_hours.summary.symbol_code
+  const temp = data.properties.timeseries[hour].data.instant.details.air_temperature
+  console.log(time)
+  console.log(symbol);
+  console.log(temp);
+  const fineTime = time.substring(11,13);
+  const weatherText = `weathericons-main/weather/svg/${symbol}.svg`
+  document.getElementById("time").textContent = (fineTime)
+  document.getElementById("weatherSymbol").innerHTML = `<img src="${weatherText}" style="width:auto;height:10vh;"><img>`
+  document.getElementById("temperature").textContent = (temp + "*")
+}
+getWeather(1);
 
 
 
@@ -37,11 +45,8 @@ async function fetchBus(stopId, titleId, bodyId){
       },
       body: JSON.stringify({
         query: `{
-          # Look up this bus stop using its NSR stop-place identifier.
           stopPlace(id: "${stopId}") {
-            # Request the stop name for the heading.
             name
-            # Request up to 5 estimated departures over the next hour.
             estimatedCalls(timeRange: 3600, numberOfDepartures: 5) {
               expectedDepartureTime
               destinationDisplay { frontText }
@@ -57,7 +62,6 @@ async function fetchBus(stopId, titleId, bodyId){
     const stop = data.data.stopPlace; 
     document.getElementById(titleId).textContent = stop.name; 
 
-    // Turn every departure into a table row.
     const rows = stop.estimatedCalls.map(call => {
       const row = document.createElement("tr");
       const departureTime = new Date(call.expectedDepartureTime).getTime();
@@ -99,5 +103,5 @@ async function fetchBus(stopId, titleId, bodyId){
   }
 }
 
-fetchBus("NSR:StopPlace:44029", "bus-title", "bus-table");
-fetchBus("NSR:StopPlace:41587", "bus-title-secondary", "bus-table-secondary");
+fetchBus("NSR:StopPlace:41962", "bus-title", "bus-table");
+fetchBus("NSR:StopPlace:43819", "bus-title-secondary", "bus-table-secondary");
