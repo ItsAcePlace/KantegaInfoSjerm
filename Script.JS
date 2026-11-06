@@ -25,11 +25,14 @@ async function getWeather(hour) {
   console.log(temp);
   const fineTime = time.substring(11,13);
   const weatherText = `weathericons-main/weather/svg/${symbol}.svg`
-  document.getElementById("time").textContent = (fineTime)
-  document.getElementById("weatherSymbol").innerHTML = `<img src="${weatherText}" style="width:auto;height:10vh;"><img>`
-  document.getElementById("temperature").textContent = (temp + "*")
+  document.getElementById(`${hour}time`).textContent = (fineTime)
+  document.getElementById(`${hour}weatherSymbol`).innerHTML = `<img src="${weatherText}" style="width:auto;height:10vh;"><img>`
+  document.getElementById(`${hour}temperature`).textContent = (temp + "°")
+  setTimeout(() => getWeather(hour), 10_000);
 }
-getWeather(1);
+for (let x = 0; x <= 6; x++) {
+  getWeather(x);
+}
 
 
 

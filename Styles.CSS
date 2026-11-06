@@ -30,7 +30,7 @@ hr{
 
 .noCard{
     background-color: #202020;
-    background-image: URL("MILITECH.png");
+    background-image: url("MILITECH.PNG");
     background-repeat: no-repeat;
     background-position: center;
     padding: 10px;
