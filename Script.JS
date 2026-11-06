@@ -13,7 +13,7 @@ startTime();
 
 
 
-async function getWeather(hour) {
+async function fetchWeather(hour) {
   const response = await fetch("https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=63.43&lon=10.39");
   const data = await response.json();
   console.log(response);
@@ -28,83 +28,48 @@ async function getWeather(hour) {
   document.getElementById(`${hour}time`).textContent = (fineTime)
   document.getElementById(`${hour}weatherSymbol`).innerHTML = `<img src="${weatherText}" style="width:auto;height:10vh;"><img>`
   document.getElementById(`${hour}temperature`).textContent = (temp + "°")
-  setTimeout(() => getWeather(hour), 10_000);
+  setTimeout(() => getWeather(hour), 60_000);
 }
 for (let x = 0; x <= 6; x++) {
-  getWeather(x);
+  fetchWeather(x);
 }
 
 
 
-async function fetchBus(stopId, titleId, bodyId){
-  const busBody = document.getElementById(bodyId);
-
-  try {
-    const res = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "ET-Client-Name": "Ace"
-      },
-      body: JSON.stringify({
-        query: `{
-          stopPlace(id: "${stopId}") {
-            name
-            estimatedCalls(timeRange: 3600, numberOfDepartures: 5) {
-              expectedDepartureTime
-              destinationDisplay { frontText }
-              serviceJourney { line { publicCode } }
-            }
+async function fetchBus(stopId, type, ){
+  const res = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "ET-Client-Name": "Ace"
+    },
+    body: JSON.stringify({
+      query: `{
+        stopPlace(id: "${stopId}") {
+          name
+          estimatedCalls(timeRange: 3600, numberOfDepartures: 5) {
+            expectedDepartureTime
+            destinationDisplay { frontText }
+            serviceJourney { line { publicCode } }
           }
-        }`
-      })
-    });
-
-    const data = await res.json();
-
-    const stop = data.data.stopPlace; 
-    document.getElementById(titleId).textContent = stop.name; 
-
-    const rows = stop.estimatedCalls.map(call => {
-      const row = document.createElement("tr");
-      const departureTime = new Date(call.expectedDepartureTime).getTime();
-      const minutesUntilDeparture = Math.max(0, Math.ceil((departureTime - Date.now()) / 60_000));
-      let departureCountdown;
-      if (Number.isNaN(departureTime)) {
-        departureCountdown = "Time unavailable";
-      } else if (minutesUntilDeparture > 10) {
-        departureCountdown = new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Europe/Oslo",
-          hour: "2-digit",
-          minute: "2-digit"
-        }).format(new Date(departureTime));
-      } else if (minutesUntilDeparture === 0) {
-        departureCountdown = "Now";
-      } else {
-        departureCountdown = `${minutesUntilDeparture} min`;
-      }
-      const values = [
-        call.serviceJourney?.line?.publicCode ?? "—",
-        call.destinationDisplay?.frontText ?? "—",
-        departureCountdown
-      ];
-      for (const value of values) {
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-      }
-      return row;
-    });
-    busBody.replaceChildren(...rows);
-    if (rows.length === 0) {
-      busBody.textContent = "No departures found.";
-    }
-  } catch (error) {
-    console.error("Could not load bus departures:", error);
-  } finally {
-    setTimeout(() => fetchBus(stopId, titleId, bodyId), 10_000);
+        }
+      }`
+    })
+  });
+  const data = await res.json();
+  console.log(data)
+  const stopName = data.data.stopPlace.name
+  document.getElementById(`${type}StopName`).textContent = stopName;
+  for (let x = 0; x <= 4; x++) {
+    const call = data.data.stopPlace.estimatedCalls[x];
+    const lineNr = call.serviceJourney.line.publicCode;
+    const lineName = call.destinationDisplay.frontText;
+    const lineDepart = new Intl.DateTimeFormat("en-GB", {timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}).format(new Date(call.expectedDepartureTime));
+    document.getElementById(`${type}${x}busNr`).textContent = lineNr;
+    document.getElementById(`${type}${x}busName`).textContent = lineName;
+    document.getElementById(`${type}${x}busDepart`).textContent = lineDepart;
   }
+  setTimeout(() => fetchBus(stopId, type), 10_000);
 }
-
-fetchBus("NSR:StopPlace:41962", "bus-title", "bus-table");
-fetchBus("NSR:StopPlace:43819", "bus-title-secondary", "bus-table-secondary");
+fetchBus("NSR:StopPlace:41962", "primary");
+fetchBus("NSR:StopPlace:43819", "seccondary");
